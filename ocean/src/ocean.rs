@@ -4,27 +4,32 @@ use crate::reef::Reef;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::slice::Iter;
+use std::collections::VecDeque;
 
 #[derive(Debug)]
 pub struct Ocean {
-    // TODO: Fill in fields here.
+    beaches: Vec<Beach>,
+    reefs: Vec<Rc<RefCell<Reef>>>,
 }
 
 impl Ocean {
     pub fn new() -> Ocean {
-        unimplemented!();
+        Ocean {
+            beaches: Vec::new(),
+            reefs: Vec::new(),
+        }
     }
 
     pub fn add_beach(&mut self, beach: Beach) {
-        unimplemented!();
+        self.beaches.push(beach);
     }
 
     pub fn beaches(&self) -> Iter<Beach> {
-        unimplemented!();
+        self.beaches.iter()
     }
 
     pub fn reefs(&self) -> Iter<Rc<RefCell<Reef>>> {
-        unimplemented!();
+        self.reefs.iter()
     }
 
     /**
@@ -34,13 +39,37 @@ impl Ocean {
      *
      * Returns a reference to the newly created reef.
      */
-    pub fn generate_reef(
-        &mut self,
-        n_minnows: u32,
-        n_shrimp: u32,
-        n_clams: u32,
-        n_algae: u32,
-    ) -> Rc<RefCell<Reef>> {
-        unimplemented!();
+    pub fn generate_reef(&mut self, n_minnows: u32, n_shrimp: u32, n_clams: u32, n_algae: u32) -> Rc<RefCell<Reef>> {
+        let mut reef = Reef::new();
+
+        for _ in 0..n_algae {
+            reef.add_prey(Box::new(Algae::new()));
+        }
+
+        // Placeholder for other prey types, to be implemented later
+        // for _ in 0..n_minnows {
+        //     // Add Minnows
+        // }
+        // for _ in 0..n_shrimp {
+        //     // Add Shrimp
+        // }
+        // for _ in 0..n_clams {
+        //     // Add Clams
+        // }
+
+        // Placeholder for other prey types, to be implemented later
+        for _ in 0..n_minnows {
+            reef.add_prey(Box::new(Minnow::new(25)));
+        }
+        for _ in 0..n_shrimp {
+            reef.add_prey(Box::new(Shrimp::new(1)));
+        }
+        for _ in 0..n_clams {
+            reef.add_prey(Box::new(Clam::new()));
+        }
+
+        let reef_rc = Rc::new(RefCell::new(reef));
+        self.reefs.push(Rc::clone(&reef_rc));
+        reef_rc
     }
 }
